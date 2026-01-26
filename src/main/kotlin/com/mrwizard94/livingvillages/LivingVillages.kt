@@ -48,7 +48,16 @@ object LivingVillages : ModInitializer {
         // - Reputation System
         // - Golem Repair
         // - UI Systems
-        // - Commands
+        // Register Commands
+        log("Registering commands...")
+        try {
+            net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT.register { dispatcher, _ , _ ->
+                com.mrwizard94.livingvillages.command.VillageCommands.register(dispatcher)
+            }
+            log("Commands registered")
+        } catch (e: Exception) {
+            error("Failed to register commands", e)
+        }
         
         logger.info("✅ $MOD_NAME initialized successfully!")
     }
