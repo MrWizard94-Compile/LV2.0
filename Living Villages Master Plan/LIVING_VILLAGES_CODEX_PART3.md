@@ -632,6 +632,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/lv detect` command to trigger village detection on the current world — **2026-01-26**
 - `/lv list` command to list all registered villages (now with per-village details) — **2026-01-26**
 - `/lv info <uuid>` command to show detailed information for a specific village — **2026-01-26**
+- Formatter helpers for `/lv` output (`formatVillageList`, `formatVillageInfo`) and unit tests verifying output content — **2026-01-26**
 
 ### Branch
 - `chore/tests-ci-codex` pushed to `https://github.com/MrWizard94-Compile/LV2.0` — **2026-01-26** (PR pending)
