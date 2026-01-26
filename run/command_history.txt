@@ -1,0 +1,2 @@
+/locate structure minecraft:village_plains
+/tp @s 832 ~ -1040

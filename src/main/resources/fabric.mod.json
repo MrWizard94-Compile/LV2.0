@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "livingvillages",
+  "version": "${version}",
+  "name": "Living Villages",
+  "description": "Transform static villages into living, breathing, evolving communities",
+  "authors": [
+    "MrWizard94"
+  ],
+  "contact": {
+    "homepage": "https://github.com/MrWizard94/living-villages",
+    "sources": "https://github.com/MrWizard94/living-villages"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/livingvillages/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "com.mrwizard94.livingvillages.LivingVillages"
+      }
+    ]
+  },
+  "mixins": [
+    "livingvillages.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

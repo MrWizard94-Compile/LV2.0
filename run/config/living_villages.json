@@ -1,0 +1,106 @@
+{
+    "villageExpansion": {
+        "enabled": true,
+        "expansionIntervalTicks": 24000,
+        "maxVillageRadius": 128,
+        "requireMaterials": true,
+        "constructionSpeedMultiplier": 1.0,
+        "allowOffloadedExpansion": false,
+        "maxBuildingsPerTier": {
+            "tier_0": 7,
+            "tier_1": 12,
+            "tier_2": 20,
+            "tier_3": 35,
+            "tier_4": 50,
+            "tier_5": 75
+        }
+    },
+    "population": {
+        "enableImmigration": true,
+        "immigrationIntervalTicks": 12000,
+        "requiredEmptyBeds": 2,
+        "requiredFoodPerImmigrant": 64,
+        "maxPopulationPerTier": {
+            "tier_0": 10,
+            "tier_1": 20,
+            "tier_2": 40,
+            "tier_3": 60,
+            "tier_4": 100,
+            "tier_5": 150
+        }
+    },
+    "shopSystem": {
+        "enabled": true,
+        "shopsPerVillage": {
+            "small": 1,
+            "medium": 2,
+            "large": 4
+        },
+        "restockMode": "time_based",
+        "restockIntervalTicks": 24000,
+        "defaultCurrency": "minecraft:emerald",
+        "acceptedCurrencies": [
+            {
+                "item": "minecraft:emerald",
+                "value": 1
+            },
+            {
+                "item": "minecraft:emerald_block",
+                "value": 9
+            }
+        ],
+        "priceMultiplier": 1.0,
+        "maxStockPerItem": 64
+    },
+    "professions": {
+        "enableCustomProfessions": true,
+        "biomeSpecificProfessions": true,
+        "professionSpawnWeights": {
+            "miner": 1.0,
+            "hunter": 1.0,
+            "woodworker": 1.5,
+            "engineer": 0.5
+        }
+    },
+    "naming": {
+        "villagersHaveNames": true,
+        "villagesHaveNames": true,
+        "childrenInheritLastName": true,
+        "disableNameTags": true,
+        "showNamesAboveHead": true
+    },
+    "socialSystems": {
+        "enableRelationships": true,
+        "enableMoodSystem": true,
+        "enableHungerSystem": false,
+        "villagersBefriendMobs": true
+    },
+    "defense": {
+        "enableGolemRepair": true,
+        "repairSpeedMultiplier": 1.0,
+        "pauseExpansionDuringRaids": true,
+        "safetyThresholdForExpansion": 0.7
+    },
+    "ui": {
+        "showVillageNamesOnEntry": true,
+        "villageNameDisplayDurationTicks": 60,
+        "showEventNotifications": true,
+        "immersiveMessages": true
+    },
+    "performance": {
+        "maxActiveBuilders": 5,
+        "constructionBlocksPerTick": 2,
+        "aiUpdateInterval": 10,
+        "disableAiInTradingHalls": false
+    },
+    "compatibility": {
+        "moreVillagersIntegration": true,
+        "economyModIntegration": true,
+        "detectModdedBiomes": true
+    },
+    "debug": {
+        "enableDebugCommands": true,
+        "logVillageActions": false,
+        "showConstructionBounds": false
+    }
+}
