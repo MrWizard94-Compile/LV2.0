@@ -636,6 +636,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Village expansion engine: implemented core tick behavior, selection and queueing, and added unit tests for `canExpand` and `queueConstruction` — **2026-01-26**
 - Village expansion engine: added tick-level integration tests validating expansion tick behavior and queueing — **2026-01-26**
 - Village expansion engine: added `performExpansion` test helper and tests for end-to-end enqueue & timestamp behavior — **2026-01-26**
+- Village expansion engine: added `testTick` test-friendly tick helper and integration tests to validate end-to-end tick behavior without a `ServerWorld` — **2026-01-26**
 
 ### Branch
 - `chore/tests-ci-codex` pushed to `https://github.com/MrWizard94-Compile/LV2.0` — **2026-01-26** (PR pending)

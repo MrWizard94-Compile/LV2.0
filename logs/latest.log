@@ -1,7 +1,8 @@
-[10:37:15] [Test worker/INFO]: [Living Villages] Registered 5 shop types
-[10:37:15] [Test worker/INFO]: [Living Villages] Registered 5 shop types
-[10:37:15] [Test worker/INFO]: [Living Villages] Registered village: CollectorTown at BlockPos{x=5, y=65, z=5}
-[10:37:15] [Test worker/INFO]: [Living Villages] Unregistered village: CollectorTown
-[10:37:15] [Test worker/INFO]: [Living Villages] Registered village: InfoTown at BlockPos{x=2, y=64, z=-2}
-[10:37:15] [Test worker/INFO]: [Living Villages] Unregistered village: InfoTown
-[10:37:15] [Test worker/INFO]: [Living Villages] Performed expansion for PerformVillage: living_villages:test_perform at BlockPos{x=5, y=64, z=5} (time=424242)
+[10:52:39] [Test worker/INFO]: [Living Villages] Registered 5 shop types
+[10:52:39] [Test worker/INFO]: [Living Villages] Registered 5 shop types
+[10:52:39] [Test worker/INFO]: [Living Villages] Registered village: CollectorTown at BlockPos{x=5, y=65, z=5}
+[10:52:39] [Test worker/INFO]: [Living Villages] Unregistered village: CollectorTown
+[10:52:39] [Test worker/INFO]: [Living Villages] Registered village: InfoTown at BlockPos{x=2, y=64, z=-2}
+[10:52:39] [Test worker/INFO]: [Living Villages] Unregistered village: InfoTown
+[10:52:39] [Test worker/INFO]: [Living Villages] TestTick queued construction for IntegrationVillage: living_villages:int_house at BlockPos{x=8, y=64, z=8}
+[10:52:39] [Test worker/INFO]: [Living Villages] Performed expansion for PerformVillage: living_villages:test_perform at BlockPos{x=5, y=64, z=5} (time=424242)

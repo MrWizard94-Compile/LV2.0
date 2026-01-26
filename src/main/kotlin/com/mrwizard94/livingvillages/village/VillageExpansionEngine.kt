@@ -292,4 +292,58 @@ object VillageExpansionEngine {
         village.markDirty()
         LivingVillages.log("Performed expansion for ${village.name}: ${template.templateId} at $buildSite (time=$currentTime)")
     }
+
+    /**
+     * Test-friendly tick method that avoids needing a real ServerWorld.
+     *
+     * Parameters:
+     * - village: village being ticked
+     * - currentTime: simulated world time to set on expansion
+     * - random: RNG used for any randomness in selection
+     * - buildSiteProvider: function that returns a build site for a chosen template (or null)
+     */
+    fun testTick(
+        village: VillageData,
+        currentTime: Long,
+        random: java.util.Random = java.util.Random(),
+        buildSiteProvider: (VillageData, BuildingTemplate) -> BlockPos?
+    ) {
+        if (!LVConfig.expansion.enabled) {
+            return
+        }
+
+        // Increment expansion timer
+        village.incrementExpansionTimer()
+
+        val expansionInterval = LVConfig.expansion.expansionIntervalTicks
+        if (village.expansionTimer < expansionInterval) {
+            return
+        }
+
+        // Reset timer
+        village.resetExpansionTimer()
+
+        if (!canExpand(village)) {
+            return
+        }
+
+        val buildingType = selectBuildingType(village, null)
+        if (buildingType == null) {
+            return
+        }
+
+        val buildSite = buildSiteProvider(village, buildingType)
+        if (buildSite == null) {
+            LivingVillages.log("No suitable build location found for ${village.name} (testTick)")
+            return
+        }
+
+        // Use null world for queueing (flattening skipped)
+        queueConstruction(village, buildingType, buildSite, null)
+
+        village.lastExpansionTime = currentTime
+        village.markDirty()
+
+        LivingVillages.log("TestTick queued construction for ${village.name}: ${buildingType.templateId} at $buildSite")
+    }
 }
