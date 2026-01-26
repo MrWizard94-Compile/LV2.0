@@ -26,6 +26,14 @@ object VillageCommands {
                             }
                         }
                 )
+                .then(
+                    CommandManager.literal("list")
+                        .executes { context ->
+                            val count = com.mrwizard94.livingvillages.village.VillageRegistry.getAllVillages().size
+                            LivingVillages.log("lv list invoked by ${'$'}{context.source.name} (count=${'$'}count)")
+                            return@executes count
+                        }
+                )
         )
     }
 }

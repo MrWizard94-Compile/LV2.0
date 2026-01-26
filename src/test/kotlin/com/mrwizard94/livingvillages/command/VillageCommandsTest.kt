@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 class VillageCommandsTest {
     @Test
-    fun `registers lv detect command`() {
+    fun `registers lv commands`() {
         val dispatcher = CommandDispatcher<ServerCommandSource>()
         VillageCommands.register(dispatcher)
 
@@ -16,5 +16,8 @@ class VillageCommandsTest {
 
         val detectNode = lvNode.getChild("detect")
         assertNotNull(detectNode, "Expected 'lv detect' subcommand to be registered")
+
+        val listNode = lvNode.getChild("list")
+        assertNotNull(listNode, "Expected 'lv list' subcommand to be registered")
     }
 }
