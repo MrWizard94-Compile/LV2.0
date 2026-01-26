@@ -69,4 +69,55 @@ class VillageCommandsTest {
         assertTrue(lines.any { it.toString().contains("Prosperity") }, "Should contain prosperity line. Lines:\n${joined}")
         assertTrue(lines.any { it.toString().contains("Food") }, "Should contain food resource line. Lines:\n${joined}")
     }
+
+    @Test
+    fun `run list command collects messages`() {
+        // Setup registry with one village
+        val v = com.mrwizard94.livingvillages.village.VillageData(
+            uuid = java.util.UUID.randomUUID(),
+            name = "CollectorTown",
+            biomeType = "plains",
+            centerPos = net.minecraft.util.math.BlockPos(5, 65, 5),
+            radius = 10
+        )
+        com.mrwizard94.livingvillages.village.VillageRegistry.registerVillage(v)
+
+        val collected = mutableListOf<String>()
+        val count = VillageCommands.runList { text -> collected.add(text.toString()) }
+
+        assertEquals(1, count)
+        assertTrue(collected.any { it.contains("CollectorTown") }, "Expected village name in output")
+
+        // Cleanup
+        com.mrwizard94.livingvillages.village.VillageRegistry.unregisterVillage(v.uuid)
+    }
+
+    @Test
+    fun `run info command success and failure`() {
+        val v = com.mrwizard94.livingvillages.village.VillageData(
+            uuid = java.util.UUID.randomUUID(),
+            name = "InfoTown",
+            biomeType = "plains",
+            centerPos = net.minecraft.util.math.BlockPos(2, 64, -2),
+            radius = 6
+        )
+        com.mrwizard94.livingvillages.village.VillageRegistry.registerVillage(v)
+
+        val out = mutableListOf<String>()
+        val errs = mutableListOf<String>()
+
+        val res = VillageCommands.runInfo(v.uuid, { text -> out.add(text.toString()) }, { err -> errs.add(err.toString()) })
+        assertEquals(1, res)
+        assertTrue(out.any { it.contains("InfoTown") }, "Info output should include village name")
+
+        // Non-existent uuid
+        val fake = java.util.UUID.randomUUID()
+        out.clear(); errs.clear()
+        val res2 = VillageCommands.runInfo(fake, { text -> out.add(text.toString()) }, { err -> errs.add(err.toString()) })
+        assertEquals(0, res2)
+        assertTrue(errs.any { it.contains("Village not found") }, "Error should indicate village missing")
+
+        // Cleanup
+        com.mrwizard94.livingvillages.village.VillageRegistry.unregisterVillage(v.uuid)
+    }
 }

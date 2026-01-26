@@ -17,6 +17,10 @@ import net.minecraft.util.math.BlockPos
  * Based on: LIVING_VILLAGES_CODEX.md - Village Expansion Engine
  */
 object VillageExpansionEngine {
+
+    // Test hook: allows tests to override how build locations are discovered.
+    // Defaults to the real TerrainScanner.findBuildLocation implementation.
+    var findBuildLocation: (VillageData, ServerWorld, BuildingTemplate) -> BlockPos? = { v, w, t -> TerrainScanner.findBuildLocation(v, w, t) }
     
     /**
      * Tick method - Called every server tick for active villages
@@ -59,7 +63,7 @@ object VillageExpansionEngine {
         }
         
         // LOCATION PHASE
-        val buildSite = TerrainScanner.findBuildLocation(village, world, buildingType)
+        val buildSite = findBuildLocation(village, world, buildingType)
         if (buildSite == null) {
             LivingVillages.log("No suitable build location found for ${village.name}")
             return
@@ -85,38 +89,45 @@ object VillageExpansionEngine {
      * - Has required resources (if enabled)
      * - Has available space within radius
      */
-    private fun canExpand(village: VillageData, world: ServerWorld): Boolean {
+    /**
+     * Public variant used by tests and other systems which don't have a ServerWorld.
+     * Evaluates whether village meets the static criteria to expand (tier cap, safety, resources, raids).
+     */
+    fun canExpand(village: VillageData): Boolean {
         // Check building cap for current tier
         val currentBuildings = village.getBuildingCount()
         val tierKey = "tier_${village.tier}"
         val maxBuildings = LVConfig.expansion.maxBuildingsPerTier[tierKey] ?: 7
-        
+
         if (currentBuildings >= maxBuildings) {
             return false
         }
-        
+
         // Check safety level
         val safetyLevel = village.safetyLevel
         val safetyThreshold = LVConfig.defense.safetyThresholdForExpansion
-        
+
         if (safetyLevel < safetyThreshold) {
             return false
         }
-        
+
         // Check for active raid
         if (village.isUnderAttack()) {
             return false
         }
-        
+
         // Check resources (if required)
         if (LVConfig.expansion.requireMaterials) {
             if (!village.hasMinimumResources()) {
                 return false
             }
         }
-        
+
         return true
     }
+
+    // Backwards-compatible private adapter used by tick
+    private fun canExpand(village: VillageData, world: ServerWorld): Boolean = canExpand(village)
     
     /**
      * Selects what type of building to construct
@@ -127,50 +138,51 @@ object VillageExpansionEngine {
      * 3. Infrastructure (paths, lights, decorations)
      * 4. Specialized (based on village personality)
      */
-    private fun selectBuildingType(village: VillageData, world: ServerWorld): BuildingTemplate? {
+    fun selectBuildingType(village: VillageData, world: ServerWorld?): BuildingTemplate? {
         val population = village.population
         val beds = village.getBedCount()
         val biomeId = village.biomeType
-        
+
         // URGENT: Need more housing
         if (beds < population + 2) {
             return selectHouseTemplate(village, biomeId)
         }
-        
+
         // Check profession needs
         val missingProfessions = village.getMissingProfessions()
         if (missingProfessions.isNotEmpty()) {
             return selectProfessionBuilding(village, biomeId, missingProfessions)
         }
-        
+
         // Infrastructure needs
         if (village.needsMorePaths()) {
             // TODO: Path extension template
             return null
         }
-        
+
         if (village.needsMoreLighting()) {
             // TODO: Lamp post template
             return null
         }
-        
+
         // Personality-driven selection
         val building = selectPersonalityBuilding(village, biomeId)
-        
-        // If trader personality, occasionally generate shops instead
-        if (village.personality == VillagePersonality.TRADER && 
-            world.random.nextInt(10) < 2) { // 20% chance
-            val shopCount = com.mrwizard94.livingvillages.shop.ShopRegistry.getShopsNear(
-                village.centerPos, 
-                village.radius.toDouble()
-            ).size
-            
-            // Generate shops if village needs more
-            if (shopCount < 3) {
-                com.mrwizard94.livingvillages.shop.ShopGenerator.generateShopsForVillage(village, world)
+
+        // If trader personality, occasionally generate shops instead (requires a ServerWorld)
+        if (world != null && village.personality == VillagePersonality.TRADER) {
+            if (world.random.nextInt(10) < 2) { // 20% chance
+                val shopCount = com.mrwizard94.livingvillages.shop.ShopRegistry.getShopsNear(
+                    village.centerPos,
+                    village.radius.toDouble()
+                ).size
+
+                // Generate shops if village needs more
+                if (shopCount < 3) {
+                    com.mrwizard94.livingvillages.shop.ShopGenerator.generateShopsForVillage(village, world)
+                }
             }
         }
-        
+
         return building
     }
     
@@ -228,17 +240,21 @@ object VillageExpansionEngine {
     /**
      * Queue a construction task
      */
-    private fun queueConstruction(
+    /**
+     * Public queueing API. Accepts a nullable world for testability (when world is not available,
+     * terrain flattening is skipped).
+     */
+    fun queueConstruction(
         village: VillageData,
         template: BuildingTemplate,
         buildSite: BlockPos,
-        world: ServerWorld
+        world: ServerWorld?
     ) {
-        // Flatten terrain if needed
-        if (template.terrainAdaptation == "flatten") {
+        // Flatten terrain if needed (only when world is available)
+        if (world != null && template.terrainAdaptation == "flatten") {
             TerrainScanner.flattenTerrain(world, buildSite, template.getWidth(), template.getDepth())
         }
-        
+
         // Create build task
         val buildTask = BuildTask(
             templateId = template.templateId,
@@ -247,10 +263,10 @@ object VillageExpansionEngine {
             totalBlocks = template.getTotalBlocks(),
             requiredMaterials = template.requiredMaterials
         )
-        
+
         // Add to construction queue
         village.constructionQueue.add(buildTask)
-        
+
         // Mark village as dirty for saving
         village.markDirty()
     }
@@ -261,5 +277,19 @@ object VillageExpansionEngine {
     fun forceExpand(village: VillageData, world: ServerWorld) {
         village.resetExpansionTimer()
         tick(village, world)
+    }
+
+    /**
+     * Testable helper to perform expansion actions without needing a full ServerWorld.
+     *
+     * This enqueues the construction task and sets the village's lastExpansionTime to the
+     * provided currentTime. It accepts an optional ServerWorld for cases where terrain
+     * flattening or shop generation is required; when null, those steps are skipped.
+     */
+    fun performExpansion(village: VillageData, template: BuildingTemplate, buildSite: BlockPos, currentTime: Long, world: ServerWorld? = null) {
+        queueConstruction(village, template, buildSite, world)
+        village.lastExpansionTime = currentTime
+        village.markDirty()
+        LivingVillages.log("Performed expansion for ${village.name}: ${template.templateId} at $buildSite (time=$currentTime)")
     }
 }

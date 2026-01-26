@@ -41,7 +41,7 @@ object BuildingPlacer {
         try {
             // Place all blocks
             template.blocks.forEach { blockPlacement ->
-                val blockPos = rotatePosition(blockPlacement.getBlockPos(), rotation).add(origin)
+                val blockPos = rotatePosition(blockPlacement.getBlockPos(), rotation, template.size).add(origin)
                 
                 try {
                     val blockState = parseBlockState(blockPlacement.block, blockPlacement.properties)
@@ -148,16 +148,36 @@ object BuildingPlacer {
     }
     
     /**
-     * Rotate a position around origin based on rotation angle
+     * Rotate a position around the template's center point
+     * 
+     * CRITICAL: Must rotate around center, not (0,0,0)
+     * This was the bug that broke V1!
+     * 
+     * @param pos Block position relative to template origin
+     * @param rotation Rotation in degrees (0, 90, 180, 270)
+     * @param templateSize Size of the template being placed
+     * @return Rotated position
      */
-    private fun rotatePosition(pos: BlockPos, rotation: Int): BlockPos {
-        return when (rotation) {
-            0 -> pos
-            90 -> BlockPos(-pos.z, pos.y, pos.x)
-            180 -> BlockPos(-pos.x, pos.y, -pos.z)
-            270 -> BlockPos(pos.z, pos.y, -pos.x)
-            else -> pos // Invalid rotation, return as-is
+    private fun rotatePosition(pos: BlockPos, rotation: Int, templateSize: BuildingSize): BlockPos {
+        // Calculate template center
+        val centerX = templateSize.width / 2.0
+        val centerZ = templateSize.depth / 2.0
+        
+        // Translate position to be relative to center
+        val relX = pos.x - centerX
+        val relZ = pos.z - centerZ
+        
+        // Rotate around center
+        val (rotX, rotZ) = when (rotation) {
+            0 -> Pair(relX, relZ)           // No rotation
+            90 -> Pair(-relZ, relX)         // 90° clockwise
+            180 -> Pair(-relX, -relZ)       // 180°
+            270 -> Pair(relZ, -relX)        // 270° clockwise (90° counter-clockwise)
+            else -> Pair(relX, relZ)        // Invalid rotation, return as-is
         }
+        
+        // Translate back from center
+        return BlockPos((rotX + centerX).toInt(), pos.y, (rotZ + centerZ).toInt())
     }
     
     /**

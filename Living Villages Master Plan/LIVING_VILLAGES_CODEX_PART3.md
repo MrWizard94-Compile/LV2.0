@@ -633,6 +633,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/lv list` command to list all registered villages (now with per-village details) — **2026-01-26**
 - `/lv info <uuid>` command to show detailed information for a specific village — **2026-01-26**
 - Formatter helpers for `/lv` output (`formatVillageList`, `formatVillageInfo`) and unit tests verifying output content — **2026-01-26**
+- Village expansion engine: implemented core tick behavior, selection and queueing, and added unit tests for `canExpand` and `queueConstruction` — **2026-01-26**
+- Village expansion engine: added tick-level integration tests validating expansion tick behavior and queueing — **2026-01-26**
+- Village expansion engine: added `performExpansion` test helper and tests for end-to-end enqueue & timestamp behavior — **2026-01-26**
 
 ### Branch
 - `chore/tests-ci-codex` pushed to `https://github.com/MrWizard94-Compile/LV2.0` — **2026-01-26** (PR pending)
@@ -670,7 +673,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### MANDATORY Update Workflow
 
-```
+```text
 EVERY TIME YOU GENERATE CODE OR MAKE CHANGES:
 
 1. BEFORE CODING:
@@ -708,7 +711,7 @@ EVERY TIME YOU GENERATE CODE OR MAKE CHANGES:
 
 ### Context Preservation Checklist
 
-```
+```text
 ✅ Did you reference the codex before starting?
 ✅ Did you state which section you're implementing?
 ✅ Did you use the exact class names from the codex?
@@ -727,7 +730,7 @@ EVERY TIME YOU GENERATE CODE OR MAKE CHANGES:
 
 ### Example 1: Adding a New Building Type
 
-```
+```text
 STEP 1 - Document in Codex:
 Add to Building Types section:
 - Building name: "Bakery"
@@ -757,7 +760,7 @@ Document any special behaviors
 
 ### Example 2: Adding a New Profession
 
-```
+```text
 STEP 1 - Document in Codex:
 Add to Custom Professions section:
 - Name: "Glassblower"
