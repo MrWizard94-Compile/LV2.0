@@ -19,5 +19,10 @@ class VillageCommandsTest {
 
         val listNode = lvNode.getChild("list")
         assertNotNull(listNode, "Expected 'lv list' subcommand to be registered")
+
+        val infoNode = lvNode.getChild("info")
+        assertNotNull(infoNode, "Expected 'lv info' subcommand to be registered")
+        // Argument node is not guaranteed to be a literal; at least check the info node has children
+        assertTrue(infoNode.children.isNotEmpty(), "Expected 'lv info' to have an argument child (uuid)")
     }
 }

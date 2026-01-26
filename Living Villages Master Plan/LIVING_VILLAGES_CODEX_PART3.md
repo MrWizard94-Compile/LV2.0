@@ -630,7 +630,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JUnit 5 support + example unit tests (`ShopTypeRegistryTest`) — **2026-01-26**
 - GitHub Actions CI workflow (`.github/workflows/ci.yml`) to run `./gradlew build` on push/PR — **2026-01-26**
 - `/lv detect` command to trigger village detection on the current world — **2026-01-26**
-- `/lv list` command to list all registered villages — **2026-01-26**
+- `/lv list` command to list all registered villages (now with per-village details) — **2026-01-26**
+- `/lv info <uuid>` command to show detailed information for a specific village — **2026-01-26**
 
 ### Branch
 - `chore/tests-ci-codex` pushed to `https://github.com/MrWizard94-Compile/LV2.0` — **2026-01-26** (PR pending)
