@@ -85,6 +85,23 @@ public class VillageCommands {
             )
         );
         
+        // /lv detect - Detect existing villages in the loaded area
+        dispatcher.register(CommandManager.literal("lv")
+            .requires(source -> source.hasPermissionLevel(2))
+            .then(CommandManager.literal("detect")
+                .executes(context -> {
+                    ServerCommandSource src = context.getSource();
+                    ServerWorld world = src.getWorld();
+
+                    // Trigger village detection on current world
+                    com.mrwizard94.livingvillages.village.VillageDetector.detectVillages(world);
+
+                    src.sendFeedback(Text.literal("§aVillage detection started."), true);
+                    return 1;
+                })
+            )
+        );
+        
         // /lv debug <toggle> - Toggle debug mode
         dispatcher.register(CommandManager.literal("lv")
             .requires(source -> source.hasPermissionLevel(2))
@@ -612,6 +629,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - JUnit 5 support + example unit tests (`ShopTypeRegistryTest`) — **2026-01-26**
 - GitHub Actions CI workflow (`.github/workflows/ci.yml`) to run `./gradlew build` on push/PR — **2026-01-26**
+- `/lv detect` command to trigger village detection on the current world — **2026-01-26**
+
+### Branch
+- `chore/tests-ci-codex` pushed to `https://github.com/MrWizard94-Compile/LV2.0` — **2026-01-26** (PR pending)
 
 ### Changed
 - Build configuration updated to add test dependencies and configure `test { useJUnitPlatform() }` in `build.gradle.kts` — **2026-01-26**

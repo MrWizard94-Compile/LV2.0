@@ -10,6 +10,9 @@ Author: Mrwizard94
 License: All Rights Reserved
 Codex Version: 1.0.0
 Last Updated: Dynamic (Updated with every change)
+
+Repository: https://github.com/MrWizard94-Compile/LV2.0 (private)
+Latest pushed branch: `chore/tests-ci-codex` (pushed 2026-01-26) - PR pending
 ```
 
 ---
